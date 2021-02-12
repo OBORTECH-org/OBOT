@@ -60,19 +60,6 @@ contract('ObertechToken',function(accounts){
     );
   });
 
-  it('Add black list not with owner', async function () {
-    await expectRevert(this.token.addBlackList(burner, {from: alice}),
-    'No rights'
-    );
-  });
-
-  it('Remove black list not with owner', async function () {
-    await expectRevert(this.token.removeBlackList(burner, {from: alice}),
-    'No rights'
-    );
-  });
-
-
   it('Burn', async function (){
     await this.token.addBurner(burner);
     await this.token.transfer(burner, ether('10.0'), { from: owner });
@@ -85,49 +72,6 @@ contract('ObertechToken',function(accounts){
       this.token.burn(burner,ether('1.0')),
       'No rights'
       );
-  });
-
-  it('Add black list', async function (){
-    await this.token.addBlackList(burner);
-    expect(await this.token.isBlackList(burner),true);
-  });
-
-  it('Double add to black list', async function () {
-    await this.token.addBlackList(burner);
-    await expectRevert(this.token.addBlackList(burner),'User already exists');
-  });
-
-  it('Remove black list', async function (){
-    await this.token.addBlackList(burner);
-    expect(await this.token.isBlackList(burner),true);
-    await this.token.removeBlackList(burner);
-    expect(await this.token.isBlackList(burner),false);
-  });
-
-  it('Double remove to black list', async function () {
-    await this.token.addBlackList(burner);
-    await this.token.removeBlackList(burner);
-    await expectRevert(this.token.removeBlackList(burner),'User already exists');
-  });
-
-  it('Transfer from black list address',async function(){
-    await this.token.transfer(burner, ether('10.0'), { from: owner });
-    await this.token.addBlackList(burner);
-    await expectRevert(
-      this.token.transfer(owner,ether('1.0'), {from: burner}),
-      'from addr in BlackList',
-    );
-  });
-
-  it('Transfer to black list address', async function(){
-    await this.token.transfer(burner,ether('5.0'),{from: owner });
-    await this.token.transfer(alice,ether('5.0'),{from: owner});
-    await this.token.addBlackList(burner);
-    await expectRevert(
-      this.token.transfer(burner,ether('1.0'),{from: alice}),
-      'to addr in BlackList'
-    );
-
   });
 
 });
