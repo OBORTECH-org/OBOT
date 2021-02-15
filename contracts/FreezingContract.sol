@@ -66,7 +66,7 @@ contract FreezingContract is Ownable {
     }
 
     function unfreezeFoundersTokens() external {
-        require(block.timestamp >= startTimestamp + first15mCounter * ONE_YEAR.div(2) * 1 days); // TODO: test this
+        require(block.timestamp >= startTimestamp + first15mCounter * ONE_YEAR.div(2) * 1 days,"Cannot unlock tokens"); // TODO: test this
         require(first15mCounter < 4, 'tokens is over');
         first15mCounter++;
         token.transfer(founderAddress, FOUNDERS_TOKENS.div(4));
