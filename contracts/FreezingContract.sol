@@ -1,10 +1,12 @@
 pragma solidity >=0.6.0 <0.8.0;
 import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
+import '@openzeppelin/contracts/math/SafeMath.sol';
 import 'contracts/ObortechToken.sol';
 
 
-contract FreezingContract is Ownable {
+contract FreezingContract is Ownable { 
+    using SafeMath for uint;
     uint256 constant private FOUNDERS_TOKENS = 60_000_000 * 10 ** 18;
     uint256 constant private MANAGEMENTS_TOKENS = 10_000_000 * 10 ** 18;
 
@@ -13,6 +15,8 @@ contract FreezingContract is Ownable {
     uint256 private first15mCounter;
     address private founderAddress;
     address private managementAddress;
+    uint256 constant ONE_YEAR = 365;
+
 
     function getStartTimestamp() external view returns (uint256) {
         return startTimestamp;
@@ -34,7 +38,7 @@ contract FreezingContract is Ownable {
         if (first15mCounter >= 4) {
             return 0;
         }
-        return startTimestamp + first15mCounter * 182.5 * 1 days; // TODO: test this
+        return startTimestamp + first15mCounter * ONE_YEAR.div(2) * 1 days; // TODO: test this
     }
 
     function setFounderAddress(address _founderAddress) external onlyOwner {
@@ -62,7 +66,7 @@ contract FreezingContract is Ownable {
     }
 
     function unfreezeFoundersTokens() external {
-        require(block.timestamp >= startTimestamp + first15mCounter * 182.5 * 1 days); // TODO: test this
+        require(block.timestamp >= startTimestamp + first15mCounter * ONE_YEAR.div(2) * 1 days); // TODO: test this
         require(first15mCounter < 4, 'tokens is over');
         first15mCounter++;
         token.transfer(founderAddress, FOUNDERS_TOKENS.div(4));
