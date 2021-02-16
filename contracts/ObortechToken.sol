@@ -22,13 +22,4 @@ contract ObertechToken is ERC20, AccessControl {
        _burn(account, amount);
     }
 
-    function addBurner(address account) external  {
-        require(hasRole(OWNER, _msgSender()), "No rights");
-        grantRole(BURNER, account);
-    }
-
-    function removeBurner(address account) external  {
-        require(hasRole(OWNER, _msgSender()), "No rights");
-        revokeRole(BURNER, account);
-    }
 }
