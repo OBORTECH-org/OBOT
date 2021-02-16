@@ -9,7 +9,8 @@ contract ObertechToken is ERC20, AccessControl {
 
     constructor (string memory name_, string memory symbol_) public ERC20(name_, symbol_) {
         _mint(_msgSender(), 300_000_000 * 10 ** 18);
-        _grantRole(OWNER, _msgSender());
+        _setRoleAdmin(BURNER, OWNER);
+        _setupRole(OWNER, _msgSender());
     }
 
     function isBurner(address account)  external view returns (bool) {
@@ -23,11 +24,11 @@ contract ObertechToken is ERC20, AccessControl {
 
     function addBurner(address account) external  {
         require(hasRole(OWNER, _msgSender()), "No rights");
-        _grantRole(BURNER, account);
+        grantRole(BURNER, account);
     }
 
     function removeBurner(address account) external  {
         require(hasRole(OWNER, _msgSender()), "No rights");
-        _revokeRole(BURNER, account);
+        revokeRole(BURNER, account);
     }
 }
