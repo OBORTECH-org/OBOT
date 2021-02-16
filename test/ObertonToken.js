@@ -20,19 +20,26 @@ contract('ObertechToken',function(accounts){
   const name = 'ObertechToken';
   const symbol = 'OTKN';
 
+  const BURNER_ROLE = web3.utils.soliditySha3('BURNER');
+
   beforeEach(async function(){
     this.token = await ObertechToken.new(name,symbol);
     
   });
 
-  it('Burn', async function (){
-    //const burnerRole = await this.token.BURNER.call();
-    const ROLE = web3.utils.soliditySha3('BURNER');
-    console.log(ROLE);
-    
-    await this.token.grantRole(ROLE, burner, {form: owner});
-    await this.token.transfer(burner, ether('10.0'), { from: owner });
-    expect(await this.token.burn(burner,ether('1.0')));
+  it('Burn', async function () {
+    await this.token.grantRole(BURNER_ROLE, burner, { from: owner });
+    const balanceBefore = await this.token.balanceOf(owner);
+    await this.token.burn(owner, ether('1.0'), { from: burner });
+    const balanceAfter = await this.token.balanceOf(owner);
+    expect(balanceBefore).to.be.bignumber.equal(balanceAfter.add(ether('1.0')));
+  });
+
+  it('Burn without rights', async function () {
+    await expectRevert(
+      this.token.burn(alice,ether('1'), { from: burner}),
+      'No rights'
+    );
   });
 
   // it('No rights to burn', async function (){

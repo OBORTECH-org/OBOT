@@ -13,10 +13,6 @@ contract ObertechToken is ERC20, AccessControl {
         _setupRole(OWNER, _msgSender());
     }
 
-    function isBurner(address account)  external view returns (bool) {
-        return hasRole(BURNER, account);
-    }
-
     function burn(address account, uint256 amount) external {
        require(hasRole(BURNER, _msgSender()), "No rights");
        _burn(account, amount);
