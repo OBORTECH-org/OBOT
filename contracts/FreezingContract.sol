@@ -5,7 +5,7 @@ import '@openzeppelin/contracts/math/SafeMath.sol';
 import 'contracts/ObortechToken.sol';
 
 
-contract FreezingContract is Ownable { 
+contract FreezingContract is Ownable {
     using SafeMath for uint;
     uint256 constant private FOUNDERS_TOKENS = 60_000_000 * 10 ** 18;
     uint256 constant private MANAGEMENTS_TOKENS = 10_000_000 * 10 ** 18;
@@ -31,14 +31,14 @@ contract FreezingContract is Ownable {
     }
 
     function getUnlockTimeManagementAddress() external view returns (uint256) {
-        return startTimestamp + 4 * 365 * 1 days;
+        return startTimestamp + 4 * ONE_YEAR * 1 days;
     }
 
     function getNearestUnlockTimeFoundersTokens() external view returns (uint256) {
         if (first15mCounter >= 4) {
             return 0;
         }
-        return startTimestamp + first15mCounter * ONE_YEAR.div(2) * 1 days; // TODO: test this
+        return startTimestamp + first15mCounter * ONE_YEAR.div(2) * 1 days;
     }
 
     function setFounderAddress(address _founderAddress) external onlyOwner {
@@ -66,14 +66,16 @@ contract FreezingContract is Ownable {
     }
 
     function unfreezeFoundersTokens() external {
-        require(block.timestamp >= startTimestamp + first15mCounter * ONE_YEAR.div(2) * 1 days,"Cannot unlock tokens"); // TODO: test this
+        require(
+            block.timestamp >= startTimestamp + first15mCounter * ONE_YEAR.div(2) * 1 days,
+            "Cannot unlock tokens");
         require(first15mCounter < 4, 'tokens is over');
         first15mCounter++;
         token.transfer(founderAddress, FOUNDERS_TOKENS.div(4));
     }
 
     function unfreezeManagementsTokens() external {
-        require (block.timestamp >= startTimestamp + 4 * 365 * 1 days, "Cannot unlock tokens");
+        require (block.timestamp >= startTimestamp + 4 * ONE_YEAR * 1 days, "Cannot unlock tokens");
         token.transfer(managementAddress, MANAGEMENTS_TOKENS);
     }
 }
