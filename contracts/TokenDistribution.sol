@@ -24,6 +24,8 @@ contract TokenDistributiom is Ownable {
     bool private WhetherToDistributeForPrivateUser;
     bool private WhetherToDistributeForIewAddress;
 
+    mapping(address => uint256) distrebuted;
+
     function configure (
         address _Sale,
         address _Investors,
@@ -41,6 +43,8 @@ contract TokenDistributiom is Ownable {
             WhetherToDistributeForInvestors = true;
             WhetherToDistributeForPrivateUser = true;
             WhetherToDistributeForIewAddress = true;
+
+
         }
 
     function distributeForSale() external onlyOwner {
@@ -65,6 +69,29 @@ contract TokenDistributiom is Ownable {
         require (WhetherToDistributeForIewAddress, 'tokens is over');
         token.transfer(IewAddress, IEO_TOKENS);
         WhetherToDistributeForIewAddress = false;
+    }
+
+    function distributeTokens(address _roleAddress,uint256 amount) external onlyOwner {
+        if(_roleAddress == SaleAddres ) {
+            require(amount > FOR_SALE_TOKENS,'too much');
+            require(distrebuted[_roleAddress] + amount > FOR_SALE_TOKENS,'tokens is over');
+            token.transfer(_roleAddress, amount);
+        } else if (_roleAddress == InvestorsAddress) {
+            require(amount > INVESTORS_TOKENS,'too much');
+            require(distrebuted[_roleAddress] + amount > INVESTORS_TOKENS,'tokens is over');
+            token.transfer(_roleAddress, amount);
+
+        } else if (_roleAddress == PrivateUserAddres) {
+            require(amount > PRIVAT_TOKENS,'too much');
+            require(distrebuted[_roleAddress] + amount > PRIVAT_TOKENS,'tokens is over');
+            token.transfer(_roleAddress, amount);
+
+        } else if (_roleAddress == IewAddress) {
+            require(amount > IEO_TOKENS,'too much');
+            require(distrebuted[_roleAddress] + amount > IEO_TOKENS);
+            token.transfer(_roleAddress, amount);
+        }
+
     }
 
 }
