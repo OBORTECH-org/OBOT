@@ -3,95 +3,102 @@ pragma solidity >=0.6.0 <0.8.0;
 import 'contracts/ObortechToken.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
+import "@openzeppelin/contracts/proxy/Initializable.sol";
+import '@openzeppelin/contracts/math/SafeMath.sol';
 
 
 
-contract TokenDistributiom is Ownable {
+contract TokenDistributiom is Initializable,Ownable {
 
-    uint256 constant private FOR_SALE_TOKENS = 200_000_000 * 10 ** 18;
-    uint256 constant private INVESTORS_TOKENS = 25_000_000 * 10 ** 18;
-    uint256 constant private PRIVAT_TOKENS = 75_000_000 * 10 ** 18;
-    uint256 constant private IEO_TOKENS = 100_000_000 * 10 ** 18;
+    using SafeMath for uint;
 
-    address private SaleAddres;
-    address private InvestorsAddress;
-    address private PrivateUserAddres;
-    address private IewAddress;
+    address private OBORTECHglobalAddr;
+    address private MarketingPoolAddr;
+    address private UserGrowthAddr;
+    address private OBORTECHFoundationAddr;
+    address private MarketMakingAddr;
+    address private DEFAULT_ADMIN_ROLE;
+    address private owner;
+
+    uint256 private OBORTECHglobalSUMM;
+    uint256 private MarketingPoolSUMM;
+    uint256 private UserGrowthSUMM;
+    uint256 private OBORTECHFoundationSUMM;
+    uint256 private MarketMakingSUMM;
+
     IERC20 private token;
+    
 
-    bool private WhetherToDistributeForSale;
-    bool private WhetherToDistributeForInvestors;
-    bool private WhetherToDistributeForPrivateUser;
-    bool private WhetherToDistributeForIewAddress;
+    
+    function distributeTokens (uint256 amount) external {
 
-    mapping(address => uint256) distrebuted;
+        token.transferFrom(_msgSender(), address(this), amount);
+
+        OBORTECHglobalSUMM += amount.mul(7000).div(10_000);
+        MarketingPoolSUMM += amount.mul(1000).div(10_000);
+        UserGrowthSUMM += amount.mul(1000).div(10_000);
+        OBORTECHFoundationSUMM += amount.mul(1000).div(10_000);
+        MarketMakingSUMM += amount.mul(500).div(10_000);
+
+    }
+    
+    function getObertechHlobalTokens() external {
+        require(_msgSender() !=  OBORTECHglobalAddr,'invalid adress');
+        token.transfer(OBORTECHglobalAddr, OBORTECHglobalSUMM);
+        OBORTECHglobalSUMM = 0;
+    }
+
+    function getMarketingPoolTokens() external {
+        require(_msgSender() !=  MarketingPoolAddr,'invalid adress');
+        token.transfer(MarketingPoolAddr, MarketingPoolSUMM);
+        MarketingPoolSUMM = 0;
+
+    }
+
+      function getUserGrowthPoolTokens() external {
+        require(_msgSender() !=  UserGrowthAddr,'invalid adress');
+        token.transfer(UserGrowthAddr, UserGrowthSUMM);
+        UserGrowthSUMM = 0;
+
+    }
+
+      function getOBORTECHFoundationTokens() external {
+        require(_msgSender() !=  OBORTECHFoundationAddr,'invalid adress');
+        token.transfer(OBORTECHFoundationAddr, OBORTECHFoundationSUMM);
+        OBORTECHFoundationSUMM = 0;
+
+    }
+
+    function getMarketMakingTokens() external {
+        require(_msgSender() !=  MarketMakingAddr,'invalid adress');
+        token.transfer(MarketMakingAddr, MarketingPoolSUMM);
+        MarketingPoolSUMM = 0;
+
+    }
 
     function configure (
-        address _Sale,
-        address _Investors,
-        address _PrivateUsr,
-        address _Ieo,
-        address _token) external
-        {
-            SaleAddres = _Sale;
-            InvestorsAddress = _Investors;
-            PrivateUserAddres = _PrivateUsr;
-            IewAddress = _Ieo;
+        address _OBORTECHglobalAddr,
+        address _MarketingPoolAddr,
+        address _UserGrowthAddr,
+        address _OBORTECHFoundationAddr,
+        address _MarketMakingAddr,
+        address _token
+        ) external {
             token = IERC20(_token);
-            token.transferFrom(_msgSender(), address(this), FOR_SALE_TOKENS + INVESTORS_TOKENS +PRIVAT_TOKENS + IEO_TOKENS);
-            WhetherToDistributeForSale = true;
-            WhetherToDistributeForInvestors = true;
-            WhetherToDistributeForPrivateUser = true;
-            WhetherToDistributeForIewAddress = true;
+            OBORTECHglobalSUMM = _OBORTECHglobalAddr;
+            MarketingPoolSUMM = _MarketingPoolAddr;
+            UserGrowthSUMM = _UserGrowthAddr;
+            OBORTECHFoundationSUMM = _OBORTECHFoundationAddr;
+            MarketMakingSUMM = _MarketMakingAddr;
+    } 
+    
 
+    
 
-        }
-
-    function distributeForSale() external onlyOwner {
-        require (WhetherToDistributeForSale, 'tokens is over');
-        token.transfer(SaleAddres, FOR_SALE_TOKENS);
-        WhetherToDistributeForSale = false;
+    function initialize( address admin, address minter) public initializer {
+    _initialize("PEAKDEFI", "PEAK", 8);
+    _setupRole(DEFAULT_ADMIN_ROLE, admin);
+    _setupRole(MINTER_ROLE, minter);
     }
-
-      function distributeForInvestors() external onlyOwner {
-        require (WhetherToDistributeForInvestors, 'tokens is over');
-        token.transfer(InvestorsAddress, INVESTORS_TOKENS);
-        WhetherToDistributeForInvestors = false;
-    }
-
-     function distributeForPrivateUser() external onlyOwner {
-        require (WhetherToDistributeForPrivateUser, 'tokens is over');
-        token.transfer(PrivateUserAddres, PRIVAT_TOKENS);
-        WhetherToDistributeForPrivateUser = false;
-    }
-
-    function distributeForIewAddress() external onlyOwner {
-        require (WhetherToDistributeForIewAddress, 'tokens is over');
-        token.transfer(IewAddress, IEO_TOKENS);
-        WhetherToDistributeForIewAddress = false;
-    }
-
-    function distributeTokens(address _roleAddress,uint256 amount) external onlyOwner {
-        if(_roleAddress == SaleAddres ) {
-            require(amount > FOR_SALE_TOKENS,'too much');
-            require(distrebuted[_roleAddress] + amount > FOR_SALE_TOKENS,'tokens is over');
-            token.transfer(_roleAddress, amount);
-        } else if (_roleAddress == InvestorsAddress) {
-            require(amount > INVESTORS_TOKENS,'too much');
-            require(distrebuted[_roleAddress] + amount > INVESTORS_TOKENS,'tokens is over');
-            token.transfer(_roleAddress, amount);
-
-        } else if (_roleAddress == PrivateUserAddres) {
-            require(amount > PRIVAT_TOKENS,'too much');
-            require(distrebuted[_roleAddress] + amount > PRIVAT_TOKENS,'tokens is over');
-            token.transfer(_roleAddress, amount);
-
-        } else if (_roleAddress == IewAddress) {
-            require(amount > IEO_TOKENS,'too much');
-            require(distrebuted[_roleAddress] + amount > IEO_TOKENS);
-            token.transfer(_roleAddress, amount);
-        }
-
-    }
-
+    
 }
