@@ -8,7 +8,7 @@ import '@openzeppelin/contracts/math/SafeMath.sol';
 
 
 
-contract TokenDistributiom is Initializable,Ownable {
+contract TokenDistributiom is Ownable {
 
     using SafeMath for uint;
 
@@ -17,8 +17,6 @@ contract TokenDistributiom is Initializable,Ownable {
     address private UserGrowthAddr;
     address private OBORTECHFoundationAddr;
     address private MarketMakingAddr;
-    address private DEFAULT_ADMIN_ROLE;
-    address private owner;
 
     uint256 private OBORTECHglobalSUMM;
     uint256 private MarketingPoolSUMM;
@@ -28,53 +26,119 @@ contract TokenDistributiom is Initializable,Ownable {
 
     IERC20 private token;
     
+        
 
     
     function distributeTokens (uint256 amount) external {
 
         token.transferFrom(_msgSender(), address(this), amount);
 
-        OBORTECHglobalSUMM += amount.mul(7000).div(10_000);
-        MarketingPoolSUMM += amount.mul(1000).div(10_000);
-        UserGrowthSUMM += amount.mul(1000).div(10_000);
-        OBORTECHFoundationSUMM += amount.mul(1000).div(10_000);
-        MarketMakingSUMM += amount.mul(500).div(10_000);
+        OBORTECHglobalSUMM = OBORTECHglobalSUMM.add(amount.mul(7000).div(10_000));
+        MarketingPoolSUMM = MarketingPoolSUMM.add(amount.mul(1000).div(10_000));
+        UserGrowthSUMM = UserGrowthSUMM.add(amount.mul(1000).div(10_000));
+        OBORTECHFoundationSUMM = OBORTECHFoundationSUMM.add(amount.mul(1000).div(10_000));
+        MarketMakingSUMM = MarketMakingSUMM.add(amount.mul(500).div(10_000));
 
     }
     
-    function getObertechHlobalTokens() external {
-        require(_msgSender() !=  OBORTECHglobalAddr,'invalid adress');
-        token.transfer(OBORTECHglobalAddr, OBORTECHglobalSUMM);
+    function takeObertechGlobalTokens() external {
+        require(_msgSender() !=  OBORTECHglobalAddr,'invalid address');
+        uint256 _OBORTECHglobalSUMM = OBORTECHglobalSUMM;
         OBORTECHglobalSUMM = 0;
+        token.transfer(OBORTECHglobalAddr, _OBORTECHglobalSUMM);
     }
 
-    function getMarketingPoolTokens() external {
-        require(_msgSender() !=  MarketingPoolAddr,'invalid adress');
-        token.transfer(MarketingPoolAddr, MarketingPoolSUMM);
+    function taketMarketingPoolTokens() external {
+        require(_msgSender() !=  MarketingPoolAddr,'invalid address');
+        uint256 _MarketingPoolSUMM = MarketingPoolSUMM;
         MarketingPoolSUMM = 0;
+        token.transfer(MarketingPoolAddr, _MarketingPoolSUMM);
 
     }
 
-      function getUserGrowthPoolTokens() external {
-        require(_msgSender() !=  UserGrowthAddr,'invalid adress');
-        token.transfer(UserGrowthAddr, UserGrowthSUMM);
+      function takeUserGrowthPoolTokens() external {
+        require(_msgSender() !=  UserGrowthAddr,'invalid address');
+        uint256 _UserGrowthSUMM = UserGrowthSUMM;
         UserGrowthSUMM = 0;
+        token.transfer(UserGrowthAddr, _UserGrowthSUMM);
 
     }
 
-      function getOBORTECHFoundationTokens() external {
-        require(_msgSender() !=  OBORTECHFoundationAddr,'invalid adress');
-        token.transfer(OBORTECHFoundationAddr, OBORTECHFoundationSUMM);
+      function takeOBORTECHFoundationTokens() external {
+        require(_msgSender() !=  OBORTECHFoundationAddr,'invalid address');
+        uint256 _OBORTECHFoundationSUMM = OBORTECHFoundationSUMM;
         OBORTECHFoundationSUMM = 0;
-
+        token.transfer(OBORTECHFoundationAddr, _OBORTECHFoundationSUMM);
     }
 
-    function getMarketMakingTokens() external {
-        require(_msgSender() !=  MarketMakingAddr,'invalid adress');
-        token.transfer(MarketMakingAddr, MarketingPoolSUMM);
+    function takeMarketMakingTokens() external {
+        require(_msgSender() !=  MarketMakingAddr,'invalid address');
+        uint256 _MarketingPoolSUMM = MarketingPoolSUMM;
         MarketingPoolSUMM = 0;
-
+        token.transfer(MarketMakingAddr, _MarketingPoolSUMM);
     }
+
+    function getObertechGlobalTokens() external view returns(uint256) {
+        return OBORTECHglobalSUMM;
+    }   
+
+    function getMarketingPoolTokens() external view returns(uint256) {
+        return MarketingPoolSUMM;
+    }  
+
+    function getUserGrowthTokens() external view returns(uint256) {
+        return UserGrowthSUMM;
+    }
+
+    function getOBORTECHFoundationTokens() external view returns(uint256) {
+        return OBORTECHFoundationSUMM;
+    }
+
+    function getMarketMakingTokens() external view returns(uint256) {
+        return MarketMakingSUMM;
+    }
+// Get address functions 
+    function setObertechGlobalAddress(address addr) external onlyOwner {
+        OBORTECHglobalAddr = addr;
+    }
+
+    function setMarketingPoolAddress(address addr) external onlyOwner {
+        MarketingPoolAddr = addr;
+    }
+
+    function setUserGrowthPoolAddress(address addr) external onlyOwner {
+        UserGrowthAddr = addr;
+    }
+
+     function setOBORTECHFoundationAddress(address addr) external onlyOwner {
+        OBORTECHFoundationAddr = addr;
+    }
+
+    function setMarketMakingAddress(address addr) external onlyOwner {
+        MarketMakingAddr = addr;
+    }
+    
+    function getObertechGlobalAddress() external view onlyOwner returns(address) {
+        return OBORTECHglobalAddr;
+    }
+
+    function getMarketingPoolAddress() external view onlyOwner returns(address) {
+       return MarketingPoolAddr;
+    }
+
+    function getUserGrowthPoolAddress() external view onlyOwner returns(address) {
+        return UserGrowthAddr;
+    }
+
+     function getOBORTECHFoundationAddress() external view onlyOwner returns(address) {
+        return OBORTECHFoundationAddr;
+    }
+
+    function getMarketMakingAddress() external view onlyOwner returns(address){
+        return MarketMakingAddr;
+    }
+    
+
 
     function configure (
         address _OBORTECHglobalAddr,
@@ -83,22 +147,14 @@ contract TokenDistributiom is Initializable,Ownable {
         address _OBORTECHFoundationAddr,
         address _MarketMakingAddr,
         address _token
-        ) external {
+        ) onlyOwner external {
             token = IERC20(_token);
-            OBORTECHglobalSUMM = _OBORTECHglobalAddr;
-            MarketingPoolSUMM = _MarketingPoolAddr;
-            UserGrowthSUMM = _UserGrowthAddr;
-            OBORTECHFoundationSUMM = _OBORTECHFoundationAddr;
-            MarketMakingSUMM = _MarketMakingAddr;
+            OBORTECHglobalAddr = _OBORTECHglobalAddr;
+            MarketingPoolAddr = _MarketingPoolAddr;
+            UserGrowthAddr = _UserGrowthAddr;
+            OBORTECHFoundationAddr = _OBORTECHFoundationAddr;
+            MarketMakingAddr = _MarketMakingAddr;
     } 
     
-
-    
-
-    function initialize( address admin, address minter) public initializer {
-    _initialize("PEAKDEFI", "PEAK", 8);
-    _setupRole(DEFAULT_ADMIN_ROLE, admin);
-    _setupRole(MINTER_ROLE, minter);
-    }
     
 }
