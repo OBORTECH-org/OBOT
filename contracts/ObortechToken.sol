@@ -2,7 +2,7 @@ pragma solidity >=0.6.0 <0.8.0;
 
 import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
-import "../IBurnable.sol";
+import "contracts/IBurnable.sol";
 
 
 contract ObertechToken is ERC20, Ownable, IBurnable {
@@ -12,7 +12,7 @@ contract ObertechToken is ERC20, Ownable, IBurnable {
         _mint(_msgSender(), 300_000_000 * 10 ** 18);
     }
 
-    function getTokenDistributionContract() external returns (address) {
+    function getTokenDistributionContract() external view returns (address) {
         return tokenDistributionContract;
     }
 

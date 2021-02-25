@@ -27,27 +27,24 @@ contract('ObertechToken',function(accounts){
     
   });
 
-  it('Burn', async function () {
-    await this.token.grantRole(BURNER_ROLE, burner, { from: owner });
-    const balanceBefore = await this.token.balanceOf(owner);
-    await this.token.burn(owner, ether('1.0'), { from: burner });
-    const balanceAfter = await this.token.balanceOf(owner);
-    expect(balanceBefore).to.be.bignumber.equal(balanceAfter.add(ether('1.0')));
+  it('Set burner role', async function() {
+    await this.token.setTokenDistributionContract(alice, {from: owner});
+    expect( await this.token.getTokenDistributionContract(),alice);
   });
 
-  it('Burn without rights', async function () {
+
+  it('Burn',async function() {
+    await this.token.setTokenDistributionContract(alice, {from: owner});
+    await this.token.transfer(alice, ether('10.0'), { from: owner });
+    expect( await this.token.burn(ether('1.0'),{from: alice}));
+  })
+
+  it('No rights to burn', async function (){
+    await this.token.transfer(alice, ether('10.0'), { from: owner });
     await expectRevert(
-      this.token.burn(alice,ether('1'), { from: burner}),
+      this.token.burn(ether('1.0'),{from: alice}),
       'No rights'
-    );
+      );
   });
-
-  // it('No rights to burn', async function (){
-  //   await this.token.transfer(burner, ether('10.0'), { from: owner });
-  //   await expectRevert(
-  //     this.token.burn(burner,ether('1.0')),
-  //     'No rights'
-  //     );
-  // });
 
 });

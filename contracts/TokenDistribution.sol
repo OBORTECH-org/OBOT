@@ -3,8 +3,8 @@ pragma solidity >=0.6.0 <0.8.0;
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/math/SafeMath.sol';
-import '../IBurnable.sol';
-import '../ObortechToken.sol';
+import 'contracts/IBurnable.sol';
+import 'contracts/ObortechToken.sol';
 
 
 contract TokenDistribution is Ownable {
@@ -24,9 +24,8 @@ contract TokenDistribution is Ownable {
 
     IERC20 private token;
 
-    function distributeTokens (uint256 amount) external {
+    function distributeTokens (uint256 amount)  external {
         token.transferFrom(_msgSender(), address(this), amount);
-
         IBurnable(address(token)).burn(amount.div(20)); // burn 5%
         uint256 _amount = amount.mul(95).div(100);
 
