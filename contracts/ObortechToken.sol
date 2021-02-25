@@ -1,22 +1,27 @@
 pragma solidity >=0.6.0 <0.8.0;
+
 import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
-import '@openzeppelin/contracts/access/AccessControl.sol';
+import '@openzeppelin/contracts/access/Ownable.sol';
+import "../IBurnable.sol";
 
 
-contract ObertechToken is ERC20, AccessControl {
-    bytes32 public constant OWNER = keccak256("OWNER");
-    bytes32 public constant BURNER = keccak256("BURNER");
+contract ObertechToken is ERC20, Ownable, IBurnable {
+    address private tokenDistributionContract;
 
     constructor (string memory name_, string memory symbol_) public ERC20(name_, symbol_) {
         _mint(_msgSender(), 300_000_000 * 10 ** 18);
-        _setRoleAdmin(BURNER, OWNER);
-        _setupRole(OWNER, _msgSender());
     }
 
-    function burn(address account, uint256 amount) external {
-       require(hasRole(BURNER, _msgSender()), "No rights");
-       _burn(account, amount);
+    function getTokenDistributionContract() external returns (address) {
+        return tokenDistributionContract;
     }
 
-    // TODO: need transferOwnership
+    function setTokenDistributionContract(address _tokenDistributionContract) external onlyOwner {
+        tokenDistributionContract = _tokenDistributionContract;
+    }
+
+    function burn(uint256 amount) external override {
+       require(_msgSender() == tokenDistributionContract, "No rights");
+       _burn(_msgSender(), amount);
+    }
 }

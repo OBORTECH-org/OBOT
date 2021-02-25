@@ -1,14 +1,13 @@
 pragma solidity >=0.6.0 <0.8.0;
 
-import 'contracts/ObortechToken.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
-import "@openzeppelin/contracts/proxy/Initializable.sol";
 import '@openzeppelin/contracts/math/SafeMath.sol';
+import '../IBurnable.sol';
+import '../ObortechToken.sol';
 
 
-
-contract TokenDistributiom is Ownable {
+contract TokenDistribution is Ownable {
     using SafeMath for uint256;
 
     address private obortechGlobalAddress;
@@ -28,11 +27,14 @@ contract TokenDistributiom is Ownable {
     function distributeTokens (uint256 amount) external {
         token.transferFrom(_msgSender(), address(this), amount);
 
-        obortechGlobalAmount = obortechGlobalAmount.add(amount.mul(7).div(10)); // 70%
-        marketingPoolAmount = marketingPoolAmount.add(amount.div(10)); // 10%
-        userGrowthAmount = userGrowthAmount.add(amount.div(10)); // 10%
-        obobrtechFoundationAmount = obobrtechFoundationAmount.add(amount.div(20)); // 5%
-        marketMakingAmount = marketMakingAmount.add(amount.div(20)); // 5%
+        IBurnable(address(token)).burn(amount.div(20)); // burn 5%
+        uint256 _amount = amount.mul(95).div(100);
+
+        obortechGlobalAmount = obortechGlobalAmount.add(_amount.mul(7).div(10)); // 70%
+        marketingPoolAmount = marketingPoolAmount.add(_amount.div(10)); // 10%
+        userGrowthAmount = userGrowthAmount.add(_amount.div(10)); // 10%
+        obobrtechFoundationAmount = obobrtechFoundationAmount.add(_amount.div(20)); // 5%
+        marketMakingAmount = marketMakingAmount.add(_amount.div(20)); // 5%
     }
 
     function takeObertechGlobalTokens() external {
@@ -58,7 +60,7 @@ contract TokenDistributiom is Ownable {
 
     }
 
-      function takeOBORTECHFoundationTokens() external {
+      function takeObortechFoundationTokens() external {
         require(_msgSender() != obortechFoundationAddress,'invalid address');
         uint256 _obobrtechFoundationAmount = obobrtechFoundationAmount;
         obobrtechFoundationAmount = 0;
@@ -85,7 +87,7 @@ contract TokenDistributiom is Ownable {
         return userGrowthAmount;
     }
 
-    function getOBORTECHFoundationTokens() external view returns(uint256) {
+    function getObortechFoundationTokens() external view returns(uint256) {
         return obobrtechFoundationAmount;
     }
 
