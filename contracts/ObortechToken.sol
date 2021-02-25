@@ -18,4 +18,5 @@ contract ObertechToken is ERC20, AccessControl {
        _burn(account, amount);
     }
 
+    // TODO: need transferOwnership
 }

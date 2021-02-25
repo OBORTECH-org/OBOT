@@ -12,11 +12,10 @@ contract FreezingContract is Ownable {
 
     IERC20 private token;
     uint256 private startTimestamp;
-    uint256 private first15mCounter;
+    uint256 private withdrawalFoundersCounter;
     address private founderAddress;
     address private managementAddress;
     uint256 constant ONE_YEAR = 365;
-
 
     function getStartTimestamp() external view returns (uint256) {
         return startTimestamp;
@@ -35,20 +34,10 @@ contract FreezingContract is Ownable {
     }
 
     function getNearestUnlockTimeFoundersTokens() external view returns (uint256) {
-        if (first15mCounter >= 4) {
+        if (withdrawalFoundersCounter >= 4) {
             return 0;
         }
-        return startTimestamp + first15mCounter * ONE_YEAR.div(2) * 1 days;
-    }
-
-    function setFounderAddress(address _founderAddress) external onlyOwner {
-        require(_founderAddress != address(0), 'incorrect founderAddress');
-        founderAddress = _founderAddress;
-    }
-
-    function setManagementAddress(address _managementAddress) external onlyOwner {
-        require(_managementAddress != address(0), 'incorrect managementAddress');
-        managementAddress = _managementAddress;
+        return startTimestamp + withdrawalFoundersCounter * ONE_YEAR.div(2) * 1 days;
     }
 
     function configure(
@@ -62,15 +51,25 @@ contract FreezingContract is Ownable {
         founderAddress = _founderAddress;
         managementAddress = _managementAddress;
         token.transferFrom(_msgSender(), address(this), FOUNDERS_TOKENS + MANAGEMENTS_TOKENS);
-        first15mCounter = 0;
+        withdrawalFoundersCounter = 0;
+    }
+
+    function setFounderAddress(address _founderAddress) external onlyOwner {
+        require(_founderAddress != address(0), 'incorrect founderAddress');
+        founderAddress = _founderAddress;
+    }
+
+    function setManagementAddress(address _managementAddress) external onlyOwner {
+        require(_managementAddress != address(0), 'incorrect managementAddress');
+        managementAddress = _managementAddress;
     }
 
     function unfreezeFoundersTokens() external {
         require(
-            block.timestamp >= startTimestamp + first15mCounter * ONE_YEAR.div(2) * 1 days,
+            block.timestamp >= startTimestamp + withdrawalFoundersCounter * ONE_YEAR.div(2) * 1 days,
             "Cannot unlock tokens");
-        require(first15mCounter < 4, 'tokens is over');
-        first15mCounter++;
+        require(withdrawalFoundersCounter < 4, "tokens is over");
+        withdrawalFoundersCounter++;
         token.transfer(founderAddress, FOUNDERS_TOKENS.div(4));
     }
 
