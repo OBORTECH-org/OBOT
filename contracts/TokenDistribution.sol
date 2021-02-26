@@ -37,35 +37,35 @@ contract TokenDistribution is Ownable {
     }
 
     function takeObertechGlobalTokens() external {
-        require(_msgSender() != obortechGlobalAddress,'invalid address');
+        require(_msgSender() == obortechGlobalAddress,'invalid address');
         uint256 _obortechGlobalAmount = obortechGlobalAmount;
         obortechGlobalAmount = 0;
         token.transfer(obortechGlobalAddress, _obortechGlobalAmount);
     }
 
     function takeMarketingPoolTokens() external {
-        require(_msgSender() != marketingPoolAddress,'invalid address');
+        require(_msgSender() == marketingPoolAddress,'invalid address');
         uint256 _marketingPoolAmount = marketingPoolAmount;
         marketingPoolAmount = 0;
         token.transfer(marketingPoolAddress, _marketingPoolAmount);
     }
 
       function takeUserGrowthPoolTokens() external {
-        require(_msgSender() != userGrowthAddress,'invalid address');
+        require(_msgSender() == userGrowthAddress,'invalid address');
         uint256 _userGrowthAmount = userGrowthAmount;
         userGrowthAmount = 0;
         token.transfer(userGrowthAddress, _userGrowthAmount);
     }
 
       function takeObortechFoundationTokens() external {
-        require(_msgSender() != obortechFoundationAddress,'invalid address');
+        require(_msgSender() == obortechFoundationAddress,'invalid address');
         uint256 _obobrtechFoundationAmount = obobrtechFoundationAmount;
         obobrtechFoundationAmount = 0;
         token.transfer(obortechFoundationAddress, _obobrtechFoundationAmount);
     }
 
     function takeMarketMakingTokens() external {
-        require(_msgSender() != marketMakingAddress,'invalid address');
+        require(_msgSender() == marketMakingAddress,'invalid address');
         uint256 _marketingPoolAmount = marketingPoolAmount;
         marketingPoolAmount = 0;
         token.transfer(marketMakingAddress, _marketingPoolAmount);
