@@ -1,8 +1,8 @@
 pragma solidity >=0.6.0 <0.8.0;
 
-import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
-import '@openzeppelin/contracts/access/Ownable.sol';
-import "contracts/IBurnable.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "./IBurnable.sol";
 
 
 contract ObertechToken is ERC20, Ownable, IBurnable {

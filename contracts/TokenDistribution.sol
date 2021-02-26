@@ -1,10 +1,10 @@
 pragma solidity >=0.6.0 <0.8.0;
 
-import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
-import '@openzeppelin/contracts/access/Ownable.sol';
-import '@openzeppelin/contracts/math/SafeMath.sol';
-import 'contracts/IBurnable.sol';
-import 'contracts/ObortechToken.sol';
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/math/SafeMath.sol";
+import "./IBurnable.sol";
+import "./ObortechToken.sol";
 
 
 contract TokenDistribution is Ownable {
@@ -24,7 +24,7 @@ contract TokenDistribution is Ownable {
 
     IERC20 private token;
 
-    function distributeTokens (uint256 amount)  external {
+    function distributeTokens(uint256 amount) external {
         token.transferFrom(_msgSender(), address(this), amount);
         IBurnable(address(token)).burn(amount.div(20)); // burn 5%
         uint256 _amount = amount.mul(95).div(100);
@@ -43,12 +43,11 @@ contract TokenDistribution is Ownable {
         token.transfer(obortechGlobalAddress, _obortechGlobalAmount);
     }
 
-    function taketMarketingPoolTokens() external {
+    function takeMarketingPoolTokens() external {
         require(_msgSender() != marketingPoolAddress,'invalid address');
         uint256 _marketingPoolAmount = marketingPoolAmount;
         marketingPoolAmount = 0;
         token.transfer(marketingPoolAddress, _marketingPoolAmount);
-
     }
 
       function takeUserGrowthPoolTokens() external {
@@ -56,7 +55,6 @@ contract TokenDistribution is Ownable {
         uint256 _userGrowthAmount = userGrowthAmount;
         userGrowthAmount = 0;
         token.transfer(userGrowthAddress, _userGrowthAmount);
-
     }
 
       function takeObortechFoundationTokens() external {
@@ -111,24 +109,24 @@ contract TokenDistribution is Ownable {
         return obortechFoundationAddress;
     }
 
-    function getMarketMakingAddress() external view returns(address){
+    function getMarketMakingAddress() external view returns(address) {
         return marketMakingAddress;
     }
 
     function configure (
+        address _token,
         address _obortechGlobalAddress,
         address _marketingPoolAddress,
         address _userGrowthAddress,
         address _obortechFoundationAddress,
-        address _marketMakingAddress,
-        address _token
-        ) onlyOwner external {
-            token = IERC20(_token);
-            obortechGlobalAddress = _obortechGlobalAddress;
-            marketingPoolAddress = _marketingPoolAddress;
-            userGrowthAddress = _userGrowthAddress;
-            obortechFoundationAddress = _obortechFoundationAddress;
-            marketMakingAddress = _marketMakingAddress;
+        address _marketMakingAddress
+    ) onlyOwner external {
+        token = IERC20(_token);
+        obortechGlobalAddress = _obortechGlobalAddress;
+        marketingPoolAddress = _marketingPoolAddress;
+        userGrowthAddress = _userGrowthAddress;
+        obortechFoundationAddress = _obortechFoundationAddress;
+        marketMakingAddress = _marketMakingAddress;
     }
 
     // Set addresses functions
