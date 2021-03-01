@@ -10,16 +10,16 @@ const chai = require('chai');
 chai.use(require('chai-as-promised'));
 const { expect } = chai;
 
-const ObertechToken = artifacts.require('ObertechToken');
+const ObortechToken = artifacts.require('ObortechToken');
 
-contract('ObertechToken', (accounts) => {
+contract('ObortechToken', (accounts) => {
   const [owner, alice] = accounts;
 
-  const name = 'ObertechToken';
+  const name = 'ObortechToken';
   const symbol = 'OTKN';
 
   beforeEach(async () => {
-    this.token = await ObertechToken.new(name, symbol);
+    this.token = await ObortechToken.new(name, symbol);
   });
 
   it('Set burner role', async () => {

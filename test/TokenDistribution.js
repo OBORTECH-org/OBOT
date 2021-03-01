@@ -11,7 +11,7 @@ chai.use(require('chai-as-promised'));
 const { expect } = chai;
 const { ZERO_ADDRESS } = constants;
 
-const ObertechToken = artifacts.require('ObertechToken');
+const ObortechToken = artifacts.require('ObortechToken');
 const TokenDistribution = artifacts.require('TokenDistribution');
 
 contract('TokenDistribution', (accounts) => {
@@ -23,11 +23,11 @@ contract('TokenDistribution', (accounts) => {
     _obortechFoundationAddress,
     _marketMakingAddress,
   ] = accounts;
-  const name = 'ObertechToken';
+  const name = 'ObortechToken';
   const symbol = 'OTKN';
 
   beforeEach(async () => {
-    this.token = await ObertechToken.new(name, symbol);
+    this.token = await ObortechToken.new(name, symbol);
     this.token_distribution = await TokenDistribution.new();
     await this.token.approve(this.token_distribution.address, ether('300000000'), { from: owner });
     await this.token.setTokenDistributionContract(this.token_distribution.address, { from: owner });
@@ -54,7 +54,7 @@ contract('TokenDistribution', (accounts) => {
     expect(MARKET_MAKING_TOKENS).to.be.bignumber.equal(ether('4.75'));
 
 
-    
+
   });
 
   it('Take Obertech global tokens ', async () => {
@@ -177,5 +177,5 @@ contract('TokenDistribution', (accounts) => {
     );
   });
 
-  
+
 });

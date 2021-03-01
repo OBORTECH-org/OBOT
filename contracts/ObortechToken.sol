@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./IBurnable.sol";
 
 
-contract ObertechToken is ERC20, Ownable, IBurnable {
+contract ObortechToken is ERC20, Ownable, IBurnable {
     address private tokenDistributionContract;
 
     constructor (string memory name_, string memory symbol_) public ERC20(name_, symbol_) {

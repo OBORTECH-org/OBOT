@@ -11,16 +11,16 @@ chai.use(require('chai-as-promised'));
 const { expect } = chai;
 const { ZERO_ADDRESS } = constants;
 
-const ObertechToken = artifacts.require('ObertechToken');
+const ObortechToken = artifacts.require('ObortechToken');
 const FreezingContract = artifacts.require('FreezingContract');
 
 contract('FreezingContract', (accounts) => {
   const [owner, alice, founderAddress, managementAddress] = accounts;
-  const name = 'ObertechToken';
+  const name = 'ObortechToken';
   const symbol = 'OTKN';
 
   beforeEach(async () => {
-    this.token = await ObertechToken.new(name, symbol);
+    this.token = await ObortechToken.new(name, symbol);
     this.freezingContract = await FreezingContract.new();
     const startTime = await time.latest();
     this.global_time = startTime;
