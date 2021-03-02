@@ -15,9 +15,9 @@ module.exports = function (deployer, network) {
       // configure contracts
       await token.setTokenDistributionContract(tokenDistribution.address);
       await tokenDistribution.configure(
-        token.address, process.env.OBORTECH_GLOBAL_ADDRESS,
-        process.env.MARKETING_POOL_ADDRESS, process.env.USER_GROWTH_ADDRESS,
-        process.env.OBORTECH_FOUNDATION_ADDRESS, process.env.MARKET_MAKING_ADDRESS,
+        token.address, process.env.NETWORK_ADMIN_FEE_ADDRESS,
+        process.env.MARKETING_POOL_ADDRESS, process.env.USER_GROWTH_POOL_ADDRESS,
+        process.env.NON_PROFIT_ACTIVITIES_ADDRESS,
       );
       await token.approve(freezingContract.address, ether('70000000'));
       await freezingContract.configure(
