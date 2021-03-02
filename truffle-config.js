@@ -77,7 +77,8 @@ module.exports = {
       network_id: 4, // Rinkeby's id
       from: process.env.DEPLOYER_ACCOUNT, // contracts owner address
       websockets: true,
-    }
+      gasPrice: 25000000000,
+    },
   },
 
   mocha: {
