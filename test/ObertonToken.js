@@ -1,25 +1,21 @@
 const {
-  BN,
-  constants,
-  expectEvent,
   expectRevert,
   ether,
-  time,
 } = require('@openzeppelin/test-helpers');
 const chai = require('chai');
 chai.use(require('chai-as-promised'));
 const { expect } = chai;
 
-const ObertechToken = artifacts.require('ObertechToken');
+const ObortechToken = artifacts.require('ObortechToken');
 
-contract('ObertechToken', (accounts) => {
+contract('ObortechToken', (accounts) => {
   const [owner, alice] = accounts;
 
-  const name = 'ObertechToken';
-  const symbol = 'OTKN';
+  const name = 'OBORTECH';
+  const symbol = 'OBOT';
 
   beforeEach(async () => {
-    this.token = await ObertechToken.new(name, symbol);
+    this.token = await ObortechToken.new(name, symbol);
   });
 
   it('Set burner role', async () => {

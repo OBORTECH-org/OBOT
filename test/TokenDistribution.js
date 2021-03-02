@@ -1,17 +1,14 @@
 const {
-  BN,
   constants,
-  expectEvent,
   expectRevert,
   ether,
-  time,
 } = require('@openzeppelin/test-helpers');
 const chai = require('chai');
 chai.use(require('chai-as-promised'));
 const { expect } = chai;
 const { ZERO_ADDRESS } = constants;
 
-const ObertechToken = artifacts.require('ObertechToken');
+const ObortechToken = artifacts.require('ObortechToken');
 const TokenDistribution = artifacts.require('TokenDistribution');
 
 contract('TokenDistribution', (accounts) => {
@@ -23,11 +20,11 @@ contract('TokenDistribution', (accounts) => {
     nonProfitActivitiesAddress,
     
   ] = accounts;
-  const name = 'ObertechToken';
-  const symbol = 'OTKN';
+  const name = 'OBORTECH';
+  const symbol = 'OBOT';
 
   beforeEach(async () => {
-    this.token = await ObertechToken.new(name, symbol);
+    this.token = await ObortechToken.new(name, symbol);
     this.token_distribution = await TokenDistribution.new();
     await this.token.approve(this.token_distribution.address, ether('300000000'), { from: owner });
     await this.token.setTokenDistributionContract(this.token_distribution.address, { from: owner });
@@ -98,14 +95,14 @@ contract('TokenDistribution', (accounts) => {
 
   it('Set zero address in MarketingPoolAddress', async () => {
     await expectRevert(
-      this.token_distribution.setMarketingPoolAddress(ZERO_ADDRESS, { from: owner } ),
+      this.token_distribution.setMarketingPoolAddress(ZERO_ADDRESS, { from: owner }),
       'incorrect address',
     );
   });
 
   it('Set zero address in UserGrowthPoolAddress', async () => {
     await expectRevert(
-      this.token_distribution.setUserGrowthPoolAddress(ZERO_ADDRESS, { from: owner } ),
+      this.token_distribution.setUserGrowthPoolAddress(ZERO_ADDRESS, { from: owner }),
       'incorrect address',
     );
   });
@@ -155,6 +152,4 @@ contract('TokenDistribution', (accounts) => {
       nonProfitActivitiesAddress,
     );
   });
-
-  
 });

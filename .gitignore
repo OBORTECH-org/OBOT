@@ -16,3 +16,5 @@ coverage.json
 
 #deploy
 Flattened.sol
+.secret
+.env

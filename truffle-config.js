@@ -18,6 +18,12 @@
  *
  */
 
+require('dotenv').config();
+const HDWalletProvider = require('@truffle/hdwallet-provider');
+const fs = require('fs');
+
+const mnemonic = fs.readFileSync('.secret').toString().trim();
+
 module.exports = {
   /**
    * Networks define how you connect to your ethereum client and let you set the
@@ -66,6 +72,13 @@ module.exports = {
     // network_id: 2111,   // This network is yours, in the cloud.
     // production: true    // Treats this network as if it was a public net. (default: false)
     // }
+    rinkeby: {
+      provider: () => new HDWalletProvider(mnemonic, `https://rinkeby.infura.io/v3/${process.env.INFURA_ID}`),
+      network_id: 4, // Rinkeby's id
+      from: process.env.DEPLOYER_ACCOUNT, // contracts owner address
+      websockets: true,
+      gasPrice: 25000000000,
+    },
   },
 
   mocha: {
@@ -74,9 +87,9 @@ module.exports = {
     timeout: 20000000
   },
 
-  // api_keys: {
-  //   etherscan: process.env.ETHERSCAN_API_KEY,
-  // },
+  api_keys: {
+    etherscan: process.env.ETHERSCAN_API_KEY,
+  },
 
   contracts_directory: './contracts',
   // Configure your compilers

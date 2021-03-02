@@ -14,7 +14,9 @@
     "build": "truffle compile",
     "test": "truffle test",
     "truffle": "truffle",
-    "flatten": "bash ./scripts/flatten.sh"
+    "deploy": "bash ./scripts/deploy.sh",
+    "flatten": "bash ./scripts/flatten.sh",
+    "verify": "bash ./scripts/verify.sh"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +27,7 @@
   },
   "devDependencies": {
     "@openzeppelin/test-helpers": "^0.5.10",
+    "@truffle/hdwallet-provider": "^1.2.2",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-register": "^6.26.0",
@@ -32,6 +35,7 @@
     "chai": "^4.3.0",
     "chai-as-promised": "^7.1.1",
     "chai-bignumber": "^3.0.0",
+    "dotenv": "^8.2.0",
     "eslint": "^7.19.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-airbnb-base": "^14.2.1",
