@@ -17,11 +17,11 @@ const TokenDistribution = artifacts.require('TokenDistribution');
 contract('TokenDistribution', (accounts) => {
   const [
     owner,
-    _obortechGlobalAddress,
-    _marketingPoolAddress,
-    _userGrowthAddress,
-    _obortechFoundationAddress,
-    _marketMakingAddress,
+    networkAdminFeeAddress,
+    marketingPoolAddress,
+    userGrowthPoolAddress,
+    nonProfitActivitiesAddress,
+    
   ] = accounts;
   const name = 'ObertechToken';
   const symbol = 'OTKN';
@@ -32,75 +32,66 @@ contract('TokenDistribution', (accounts) => {
     await this.token.approve(this.token_distribution.address, ether('300000000'), { from: owner });
     await this.token.setTokenDistributionContract(this.token_distribution.address, { from: owner });
     await this.token_distribution.configure(
-      this.token.address, _obortechGlobalAddress,
-      _marketingPoolAddress, _userGrowthAddress,
-      _obortechFoundationAddress, _marketMakingAddress,
+      this.token.address, networkAdminFeeAddress,
+      marketingPoolAddress, userGrowthPoolAddress,
+      nonProfitActivitiesAddress,
       { from: owner },
     );
   });
 
   it('Distribute tokens', async () => {
     await this.token_distribution.distributeTokens(ether('100'));
-    const GLOBAL_OBETECH_TOKENS = await this.token_distribution.getObertechGlobalTokens();
+    const NETWORK_ADMIN_FEE_TOKENS = await this.token_distribution.getNetworkAdminFeeTokens();
     const MARKET_TKOENS = await this.token_distribution.getMarketingPoolTokens();
-    const USER_TOKENS = await this.token_distribution.getUserGrowthTokens();
-    const OBERTECH_FOUNDATION_TOKENS = await this.token_distribution.getObortechFoundationTokens();
-    const MARKET_MAKING_TOKENS = await this.token_distribution.getMarketMakingTokens();
+    const USER_TOKENS = await this.token_distribution.getUserGrowthPoolTokens();
+    const NON_PROFIT_TOKENS = await this.token_distribution.getNonProfitActivitiesTokens();
 
-    expect(GLOBAL_OBETECH_TOKENS).to.be.bignumber.equal(ether('66.5'));
-    expect(MARKET_TKOENS).to.be.bignumber.equal(ether('9.5'));
-    expect(USER_TOKENS).to.be.bignumber.equal(ether('9.5'));
-    expect(OBERTECH_FOUNDATION_TOKENS).to.be.bignumber.equal(ether('4.75'));
-    expect(MARKET_MAKING_TOKENS).to.be.bignumber.equal(ether('4.75'));
+    expect(NETWORK_ADMIN_FEE_TOKENS).to.be.bignumber.equal(ether('70'));
+    expect(MARKET_TKOENS).to.be.bignumber.equal(ether('10'));
+    expect(USER_TOKENS).to.be.bignumber.equal(ether('10'));
+    expect(NON_PROFIT_TOKENS).to.be.bignumber.equal(ether('5'));
 
 
     
   });
 
-  it('Take Obertech global tokens ', async () => {
+  it('Take Network Admin Fee Address ', async () => {
     await expectRevert(
-    this.token_distribution.takeObertechGlobalTokens({ from: _marketingPoolAddress }),
+    this.token_distribution.takeNetworkAdminFeeTokens({ from: marketingPoolAddress }),
     'invalid address',
     );
-    expect(this.token_distribution.takeObertechGlobalTokens( { from: _obortechGlobalAddress } ));
+    expect(this.token_distribution.takeNetworkAdminFeeTokens( { from: networkAdminFeeAddress } ));
   });
 
   it('Take Marketing pool tokens ', async () => {
     await expectRevert(
-    this.token_distribution.takeMarketingPoolTokens({ from: _obortechGlobalAddress }),
+    this.token_distribution.takeMarketingPoolTokens({ from: networkAdminFeeAddress }),
     'invalid address',
     );
-    expect(this.token_distribution.takeMarketingPoolTokens( { from: _marketingPoolAddress } ));
+    expect(this.token_distribution.takeMarketingPoolTokens( { from: marketingPoolAddress } ));
   });
 
-  it('Take User growth tokens', async () => {
+  it('Take User growth Pool tokens', async () => {
     await expectRevert(
-    this.token_distribution.takeUserGrowthPoolTokens({ from: _marketingPoolAddress }),
+    this.token_distribution.takeUserGrowthPoolTokens({ from: marketingPoolAddress }),
     'invalid address',
     );
-    expect(this.token_distribution.takeUserGrowthPoolTokens( { from: _userGrowthAddress }));
+    expect(this.token_distribution.takeUserGrowthPoolTokens( { from: userGrowthPoolAddress }));
   });
 
-  it('Take Obetech foundation tokens ', async () => {
+  it('Take Non Profit Activities tokens ', async () => {
     await expectRevert(
-    this.token_distribution.takeObortechFoundationTokens({ from: _marketingPoolAddress }),
+    this.token_distribution.takeNonProfitActivitiesTokens({ from: marketingPoolAddress }),
     'invalid address',
     );
-    expect(this.token_distribution.takeObortechFoundationTokens( { from: _obortechFoundationAddress } ));
+    expect(this.token_distribution.takeNonProfitActivitiesTokens( { from: nonProfitActivitiesAddress } ));
   });
 
-  it('Take Market making tokens ', async () => {
-    await expectRevert(
-    this.token_distribution.takeMarketMakingTokens( { from: _marketingPoolAddress } ),
-    'invalid address',
-    );
-    expect(this.token_distribution.takeMarketMakingTokens( { from: _marketMakingAddress } ));
-  });
-
+  
   // Set zero address tests
-  it('Set zero address in ObertechGlobalAddress', async () => {
+  it('Set zero address in Network Admin Fee Address', async () => {
     await expectRevert(
-      this.token_distribution.setObertechGlobalAddress(ZERO_ADDRESS, { from: owner } ),
+      this.token_distribution.setNetworkAdminFeeAddress(ZERO_ADDRESS, { from: owner } ),
       'incorrect address',
     );
   });
@@ -119,61 +110,49 @@ contract('TokenDistribution', (accounts) => {
     );
   });
 
-  it('Set zero address in UserObortechFoundationAddress', async () => {
+  it('Set zero address in setNonProfitActivitiesAddress', async () => {
     await expectRevert(
-      this.token_distribution.setObortechFoundationAddress(ZERO_ADDRESS, { from: owner } ),
+      this.token_distribution.setNonProfitActivitiesAddress(ZERO_ADDRESS, { from: owner } ),
       'incorrect address',
     );
   });
 
-  it('Set zero address in MarketMakingAddress', async () => {
-    await expectRevert(
-      this.token_distribution.setMarketMakingAddress(ZERO_ADDRESS, { from: owner } ),
-      'incorrect address',
-    );
-  });
+  
 
   // Set address tests
-  it('Set address in ObertechGlobalAddress', async () => {
-    await this.token_distribution.setObertechGlobalAddress(_obortechGlobalAddress, { from: owner } );
+  it('Set address in NetworkAdminFeeAddress', async () => {
+    await this.token_distribution.setNetworkAdminFeeAddress(networkAdminFeeAddress, { from: owner } );
     expect(
-      await this.token_distribution.getObertechGlobalAddress(),
-      _obortechGlobalAddress,
+      await this.token_distribution.getNetworkAdminFeeAddress(),
+      networkAdminFeeAddress,
     );
   });
 
   it('Set address in MarketingPoolAddress', async () => {
-    await this.token_distribution.setMarketingPoolAddress(_marketingPoolAddress, { from: owner } );
+    await this.token_distribution.setMarketingPoolAddress(marketingPoolAddress, { from: owner } );
     expect(
       await this.token_distribution.getMarketingPoolAddress(),
-      _marketingPoolAddress,
+      marketingPoolAddress,
     );
   });
 
   it('Set address in UserGrowthPoolAddress', async () => {
-    await this.token_distribution.setUserGrowthPoolAddress(_userGrowthAddress, { from: owner } );
+    await this.token_distribution.setUserGrowthPoolAddress(userGrowthPoolAddress, { from: owner } );
     expect(
       await this.token_distribution.getUserGrowthPoolAddress(),
-      _userGrowthAddress,
+      userGrowthPoolAddress,
     );
   });
 
-  it('Set address in MarketMakingAddress', async () => {
-    await this.token_distribution.setMarketMakingAddress(_marketMakingAddress, { from: owner } );
-    expect(
-      await this.token_distribution.getMarketMakingAddress(),
-      _marketMakingAddress,
-    );
-  });
 
-  it('Set address in UserObortechFoundationAddress', async () => {
-    await this.token_distribution.setObortechFoundationAddress(
-      _obortechFoundationAddress,
+  it('Set address in UserNonProfitActivitiesAddress', async () => {
+    await this.token_distribution.setNonProfitActivitiesAddress(
+      nonProfitActivitiesAddress,
       { from: owner },
     );
     expect(
-      await this.token_distribution.getObortechFoundationAddress(),
-      _obortechFoundationAddress,
+      await this.token_distribution.getNonProfitActivitiesAddress(),
+      nonProfitActivitiesAddress,
     );
   });
 

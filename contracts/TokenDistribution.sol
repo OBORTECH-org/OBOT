@@ -10,37 +10,33 @@ import "./ObortechToken.sol";
 contract TokenDistribution is Ownable {
     using SafeMath for uint256;
 
-    address private obortechGlobalAddress;
+    address private networkAdminFeeAddress;
     address private marketingPoolAddress;
-    address private userGrowthAddress;
-    address private obortechFoundationAddress;
-    address private marketMakingAddress;
+    address private userGrowthPoolAddress;
+    address private nonProfitActivitiesAddress;
 
-    uint256 private obortechGlobalAmount;
+    uint256 private networkAdminFeeAmount;
     uint256 private marketingPoolAmount;
-    uint256 private userGrowthAmount;
-    uint256 private obobrtechFoundationAmount;
-    uint256 private marketMakingAmount;
+    uint256 private userGrowthPoolAmount;
+    uint256 private nonProfitActivitiesAmount;
 
     IERC20 private token;
 
     function distributeTokens(uint256 amount) external {
         token.transferFrom(_msgSender(), address(this), amount);
-        IBurnable(address(token)).burn(amount.div(20)); // burn 5%
-        uint256 _amount = amount.mul(95).div(100);
-
-        obortechGlobalAmount = obortechGlobalAmount.add(_amount.mul(7).div(10)); // 70%
+        uint256 _amount = amount;
+        networkAdminFeeAmount = networkAdminFeeAmount.add(_amount.mul(7).div(10)); // 70%
         marketingPoolAmount = marketingPoolAmount.add(_amount.div(10)); // 10%
-        userGrowthAmount = userGrowthAmount.add(_amount.div(10)); // 10%
-        obobrtechFoundationAmount = obobrtechFoundationAmount.add(_amount.div(20)); // 5%
-        marketMakingAmount = marketMakingAmount.add(_amount.div(20)); // 5%
+        userGrowthPoolAmount = userGrowthPoolAmount.add(_amount.div(10)); // 10%
+        nonProfitActivitiesAmount = nonProfitActivitiesAmount.add(_amount.div(20)); // 5%
+        IBurnable(address(token)).burn(amount.div(20)); // burn 5%  
     }
 
-    function takeObertechGlobalTokens() external {
-        require(_msgSender() == obortechGlobalAddress,'invalid address');
-        uint256 _obortechGlobalAmount = obortechGlobalAmount;
-        obortechGlobalAmount = 0;
-        token.transfer(obortechGlobalAddress, _obortechGlobalAmount);
+    function takeNetworkAdminFeeTokens() external {
+        require(_msgSender() == networkAdminFeeAddress,'invalid address');
+        uint256 _networkAdminFeeAmount = networkAdminFeeAmount;
+        networkAdminFeeAmount = 0;
+        token.transfer(networkAdminFeeAddress, _networkAdminFeeAmount);
     }
 
     function takeMarketingPoolTokens() external {
@@ -51,50 +47,41 @@ contract TokenDistribution is Ownable {
     }
 
       function takeUserGrowthPoolTokens() external {
-        require(_msgSender() == userGrowthAddress,'invalid address');
-        uint256 _userGrowthAmount = userGrowthAmount;
-        userGrowthAmount = 0;
-        token.transfer(userGrowthAddress, _userGrowthAmount);
+        require(_msgSender() == userGrowthPoolAddress,'invalid address');
+        uint256 _userGrowthPoolAmount = userGrowthPoolAmount;
+        userGrowthPoolAmount = 0;
+        token.transfer(userGrowthPoolAddress, _userGrowthPoolAmount);
     }
 
-      function takeObortechFoundationTokens() external {
-        require(_msgSender() == obortechFoundationAddress,'invalid address');
-        uint256 _obobrtechFoundationAmount = obobrtechFoundationAmount;
-        obobrtechFoundationAmount = 0;
-        token.transfer(obortechFoundationAddress, _obobrtechFoundationAmount);
+      function takeNonProfitActivitiesTokens() external {
+        require(_msgSender() == nonProfitActivitiesAddress,'invalid address');
+        uint256 _nonProfitActivitiesAmount = nonProfitActivitiesAmount;
+        nonProfitActivitiesAmount = 0;
+        token.transfer(nonProfitActivitiesAddress, _nonProfitActivitiesAmount);
     }
 
-    function takeMarketMakingTokens() external {
-        require(_msgSender() == marketMakingAddress,'invalid address');
-        uint256 _marketingPoolAmount = marketingPoolAmount;
-        marketingPoolAmount = 0;
-        token.transfer(marketMakingAddress, _marketingPoolAmount);
-    }
 
     // Get amounts functions
-    function getObertechGlobalTokens() external view returns(uint256) {
-        return obortechGlobalAmount;
+    function getNetworkAdminFeeTokens() external view returns(uint256) {
+        return networkAdminFeeAmount;
     }
 
     function getMarketingPoolTokens() external view returns(uint256) {
         return marketingPoolAmount;
     }
 
-    function getUserGrowthTokens() external view returns(uint256) {
-        return userGrowthAmount;
+    function getUserGrowthPoolTokens() external view returns(uint256) {
+        return userGrowthPoolAmount;
     }
 
-    function getObortechFoundationTokens() external view returns(uint256) {
-        return obobrtechFoundationAmount;
+    function getNonProfitActivitiesTokens() external view returns(uint256) {
+        return nonProfitActivitiesAmount;
     }
 
-    function getMarketMakingTokens() external view returns(uint256) {
-        return marketMakingAmount;
-    }
 
     // Get addresses functions
-    function getObertechGlobalAddress() external view returns(address) {
-        return obortechGlobalAddress;
+    function getNetworkAdminFeeAddress() external view returns(address) {
+        return networkAdminFeeAddress;
     }
 
     function getMarketingPoolAddress() external view returns(address) {
@@ -102,37 +89,32 @@ contract TokenDistribution is Ownable {
     }
 
     function getUserGrowthPoolAddress() external view returns(address) {
-        return userGrowthAddress;
+        return userGrowthPoolAddress;
     }
 
-     function getObortechFoundationAddress() external view returns(address) {
-        return obortechFoundationAddress;
+     function getNonProfitActivitiesAddress() external view returns(address) {
+        return nonProfitActivitiesAddress;
     }
 
-    function getMarketMakingAddress() external view returns(address) {
-        return marketMakingAddress;
-    }
 
     function configure (
         address _token,
-        address _obortechGlobalAddress,
+        address _networkAdminFeeAddress,
         address _marketingPoolAddress,
-        address _userGrowthAddress,
-        address _obortechFoundationAddress,
-        address _marketMakingAddress
+        address _userGrowthPoolAddress,
+        address _nonProfitActivitiesAddress
     ) onlyOwner external {
         token = IERC20(_token);
-        obortechGlobalAddress = _obortechGlobalAddress;
+        networkAdminFeeAddress = _networkAdminFeeAddress;
         marketingPoolAddress = _marketingPoolAddress;
-        userGrowthAddress = _userGrowthAddress;
-        obortechFoundationAddress = _obortechFoundationAddress;
-        marketMakingAddress = _marketMakingAddress;
+        userGrowthPoolAddress = _userGrowthPoolAddress;
+        nonProfitActivitiesAddress = _nonProfitActivitiesAddress;
     }
 
     // Set addresses functions
-    function setObertechGlobalAddress(address addr) external onlyOwner {
+    function setNetworkAdminFeeAddress(address addr) external onlyOwner {
         require(addr != address(0), 'incorrect address');
-        obortechGlobalAddress = addr;
+        networkAdminFeeAddress = addr;
     }
 
     function setMarketingPoolAddress(address addr) external onlyOwner {
@@ -142,16 +124,12 @@ contract TokenDistribution is Ownable {
 
     function setUserGrowthPoolAddress(address addr) external onlyOwner {
         require(addr != address(0), 'incorrect address');
-        userGrowthAddress = addr;
+        userGrowthPoolAddress = addr;
     }
 
-    function setObortechFoundationAddress(address addr) external onlyOwner {
+    function setNonProfitActivitiesAddress(address addr) external onlyOwner {
         require(addr != address(0), 'incorrect address');
-        obortechFoundationAddress = addr;
+        nonProfitActivitiesAddress = addr;
     }
 
-    function setMarketMakingAddress(address addr) external onlyOwner {
-        require(addr != address(0), 'incorrect address');
-        marketMakingAddress = addr;
-    }
 }
