@@ -1,10 +1,6 @@
 const {
-  BN,
-  constants,
-  expectEvent,
   expectRevert,
   ether,
-  time,
 } = require('@openzeppelin/test-helpers');
 const chai = require('chai');
 chai.use(require('chai-as-promised'));
@@ -15,8 +11,8 @@ const ObortechToken = artifacts.require('ObortechToken');
 contract('ObortechToken', (accounts) => {
   const [owner, alice] = accounts;
 
-  const name = 'ObortechToken';
-  const symbol = 'OTKN';
+  const name = 'OBORTECH';
+  const symbol = 'OBOT';
 
   beforeEach(async () => {
     this.token = await ObortechToken.new(name, symbol);

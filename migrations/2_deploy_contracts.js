@@ -9,12 +9,12 @@ module.exports = function (deployer, network) {
     if (network === 'test' || network === 'soliditycoverage') {
     } else if (network.startsWith('rinkeby')) {
       // deploy contracts
-      const token = await deployer.deploy(ObortechToken, 'ObortechToken', 'OTKN');
-      const token_distribution = await deployer.deploy(TokenDistribution);
+      const token = await deployer.deploy(ObortechToken, 'OBORTECH', 'OBOT');
+      const tokenDistribution = await deployer.deploy(TokenDistribution);
       const freezingContract = await deployer.deploy(FreezingContract);
       // configure contracts
-      await token.setTokenDistributionContract(token_distribution.address);
-      await token_distribution.configure(
+      await token.setTokenDistributionContract(tokenDistribution.address);
+      await tokenDistribution.configure(
         token.address, process.env.OBORTECH_GLOBAL_ADDRESS,
         process.env.MARKETING_POOL_ADDRESS, process.env.USER_GROWTH_ADDRESS,
         process.env.OBORTECH_FOUNDATION_ADDRESS, process.env.MARKET_MAKING_ADDRESS,

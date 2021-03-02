@@ -1,7 +1,6 @@
 const {
   BN,
   constants,
-  expectEvent,
   expectRevert,
   ether,
   time,
@@ -16,8 +15,8 @@ const FreezingContract = artifacts.require('FreezingContract');
 
 contract('FreezingContract', (accounts) => {
   const [owner, alice, founderAddress, managementAddress] = accounts;
-  const name = 'ObortechToken';
-  const symbol = 'OTKN';
+  const name = 'OBORTECH';
+  const symbol = 'OBOT';
 
   beforeEach(async () => {
     this.token = await ObortechToken.new(name, symbol);
