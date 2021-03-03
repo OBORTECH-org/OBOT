@@ -192,7 +192,7 @@ contract('FreezingContract', (accounts) => {
   });
 
   it('unfreeze management tokens with the right time', async () => {
-    time.increase(time.duration.days('1460'));
+    time.increase(time.duration.days('730'));
     await this.freezingContract.unfreezeManagementsTokens();
     const managementBalance = await this.token.balanceOf(managementAddress);
     expect(managementBalance).to.be.bignumber.equal(ether('10000000'));

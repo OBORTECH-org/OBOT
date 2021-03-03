@@ -74,7 +74,7 @@ contract FreezingContract is Ownable {
     }
 
     function unfreezeManagementsTokens() external {
-        require (block.timestamp >= startTimestamp + 4 * ONE_YEAR * 1 days, "Cannot unlock tokens");
+        require (block.timestamp >= startTimestamp + 2 * ONE_YEAR * 1 days, "Cannot unlock tokens");
         token.transfer(managementAddress, MANAGEMENTS_TOKENS);
     }
 }
