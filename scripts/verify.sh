@@ -11,7 +11,7 @@ else
     if [[ $1 = "all" ]]; then
       truffle run verify ObortechToken --network $2
       truffle run verify FreezingContract --network $2
-      truffle run verify TokenDistribution --network $2
+#      truffle run verify TokenDistribution --network $2
     else
       truffle run verify $1 --network $2
     fi

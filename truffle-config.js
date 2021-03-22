@@ -79,6 +79,17 @@ module.exports = {
       websockets: true,
       gasPrice: 25000000000,
     },
+
+    mainnet: {
+      provider: () => new HDWalletProvider(mnemonic, `https://mainnet.infura.io/v3/${process.env.INFURA_ID}`),
+      network_id: 1, // mainnet's id
+      networkCheckTimeout: 10000000,
+      gasLimit: 1000000,
+      from: process.env.DEPLOYER_ACCOUNT, // contracts owner address
+      websockets: true,
+      confirmations: 2,
+      gasPrice: 80000000000,
+    },
   },
 
   mocha: {
